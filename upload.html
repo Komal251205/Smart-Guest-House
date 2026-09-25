@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Gallery Photos — Smart Guest House</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:     #C9902B;
+      --gold-l:   #E8B84B;
+      --gold-p:   #F5D88A;
+      --maroon:   #8B1A1A;
+      --maroon-d: #5C0F0F;
+      --cream:    #FDF6EC;
+      --cream-d:  #F5E8CC;
+      --text:     #2A1505;
+      --muted:    #8A6040;
+      --green:    #15803d;
+      --radius:   12px;
+      --shadow:   0 8px 32px rgba(90,30,10,.13);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--maroon-d), var(--maroon));
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold-l); margin-bottom: 6px; }
+    .page-header p  { font-size: .88rem; color: rgba(255,255,255,.72); }
+
+    main { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    a.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 600; color: var(--maroon); margin-bottom: 24px; transition: gap .2s; }
+    a.back-link:hover { gap: 10px; }
+
+    /* Cards */
+    .card { background: #fff; border: 1.5px solid rgba(201,144,43,.28); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--maroon); margin-bottom: 14px; }
+
+    /* Steps */
+    .steps { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .steps li {
+      counter-increment: step;
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: .9rem; color: var(--muted); line-height: 1.6;
+    }
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--gold-l), var(--gold));
+      color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .8rem;
+      margin-top: 1px;
+    }
+    .steps li strong { color: var(--text); }
+    code { background: var(--cream-d); border-radius: 4px; padding: 1px 6px; font-size: .85em; color: var(--maroon); word-break: break-all; }
+
+    /* Drop zone */
+    .drop-zone {
+      border: 2.5px dashed var(--gold);
+      border-radius: var(--radius);
+      padding: 44px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--cream);
+      position: relative;
+    }
+    .drop-zone.dragover { border-color: var(--maroon); background: #fff8e6; transform: scale(1.01); }
+    .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+    .drop-zone p { margin: 0; font-size: .9rem; color: var(--muted); }
+    .drop-zone p strong { color: var(--text); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; border-radius: 50px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: .88rem; cursor: pointer; border: 2px solid transparent; transition: all .22s; }
+    .btn-gold { background: linear-gradient(135deg, var(--gold-l), var(--gold)); color: #fff; border-color: var(--gold); box-shadow: 0 4px 18px rgba(201,144,43,.28); }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,144,43,.4); }
+    .btn-maroon { background: var(--maroon); color: #fff; border-color: var(--maroon); }
+    .btn-maroon:hover { background: var(--maroon-d); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--maroon); border-color: var(--maroon); }
+    .btn-outline:hover { background: var(--maroon); color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: .78rem; }
+    .btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Preview grid */
+    #preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 10px; }
+
+    .preview-item {
+      border: 1.5px solid rgba(201,144,43,.25);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--cream-d);
+      animation: slideIn .3s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+    .preview-thumb {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      display: block; border-bottom: 1px solid rgba(201,144,43,.2);
+    }
+    .preview-body { padding: 10px 12px; }
+    .preview-filename { font-size: .78rem; font-weight: 600; color: var(--text); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .preview-caption-input {
+      width: 100%;
+      border: 1.5px solid rgba(201,144,43,.3);
+      border-radius: 7px;
+      padding: 6px 9px;
+      font-size: .78rem;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s;
+      margin-bottom: 8px;
+    }
+    .preview-caption-input:focus { outline: none; border-color: var(--gold); }
+    .preview-caption-input::placeholder { color: #bbb; }
+
+    .remove-btn { background: none; border: none; cursor: pointer; font-size: .75rem; color: #dc2626; font-weight: 600; transition: opacity .2s; }
+    .remove-btn:hover { opacity: .75; }
+
+    /* JSON output */
+    #json-output-wrap { display: none; }
+    #json-output {
+      width: 100%;
+      min-height: 180px;
+      border: 1.5px solid rgba(201,144,43,.35);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Courier New', monospace;
+      font-size: .83rem;
+      color: var(--text);
+      background: var(--cream);
+      resize: vertical;
+      line-height: 1.6;
+    }
+    #json-output:focus { outline: none; border-color: var(--gold); }
+
+    .copy-btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+
+    .toast {
+      display: none;
+      background: var(--green);
+      color: #fff;
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: .8rem;
+      font-weight: 600;
+      animation: fadeIn .2s;
+    }
+    .toast.show { display: inline-block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Instruction callout */
+    .callout {
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      font-size: .86rem;
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .callout-info    { background: #fffbeb; border-left: 4px solid var(--gold); }
+    .callout-success { background: #f0fdf4; border-left: 4px solid var(--green); }
+    .callout-warn    { background: #fef2f2; border-left: 4px solid #dc2626; }
+    .callout strong  { display: block; margin-bottom: 4px; color: var(--text); }
+
+    .folder-path {
+      display: inline-block;
+      background: var(--maroon-d);
+      color: var(--gold-p);
+      border-radius: 6px;
+      padding: 2px 9px;
+      font-family: monospace;
+      font-size: .88em;
+    }
+
+    /* empty state */
+    .empty-state { text-align: center; padding: 20px; color: var(--muted); font-size: .88rem; }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    /* Toolbar */
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+    .item-count { font-size: .82rem; color: var(--muted); margin-left: auto; }
+
+    @media (max-width: 560px) {
+      #preview-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 380px) {
+      #preview-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>🏛️ Smart Guest House — Photo Manager</h1>
+  <p>Add real venue photos to the gallery · Owner use only</p>
+</header>
+
+<main>
+  <a href="index.html" class="back-link">← Back to Website</a>
+
+  <!-- ── HOW IT WORKS ── -->
+  <div class="card">
+    <h2>📖 How to Add Photos to Your Gallery</h2>
+
+    <div class="callout callout-info">
+      <strong>No accounts, no internet service needed.</strong>
+      Photos live in your own <span class="folder-path">images/</span> folder.
+      This tool helps you preview them and build the correct <code>gallery.json</code> in seconds.
+    </div>
+
+    <ol class="steps">
+      <li>
+        <div>
+          <strong>Copy your venue photos into the <span class="folder-path">images/</span> folder</strong>
+          — the same folder that already contains <code>hero.jpg</code>.
+          Use simple file names with no spaces, e.g. <code>stage.jpg</code>, <code>seating.jpg</code>.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Open this page in your browser</strong> (open the file <code>upload.html</code> locally)
+          and drag your photos into the box below, or click to pick them. This is only for preview — photos are NOT uploaded anywhere.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Add a caption for each photo</strong> (optional), then click <em>"Generate gallery.json"</em>.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Copy the generated JSON</strong> and paste it into your <code>gallery.json</code> file
+          (replacing all existing content). Save the file.
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Re-deploy your site</strong> — run <code>vercel --prod</code> inside the
+          <span class="folder-path">Smart-Guest-House</span> folder, or push to GitHub and
+          <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" style="color:var(--gold);font-weight:600;">Vercel</a>
+          auto-deploys on every commit. Your gallery updates instantly.
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-warn" style="margin-top:16px;margin-bottom:0;">
+      <strong>⚠️ Tip: Keep photos under 500 KB each</strong>
+      Use <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" style="color:var(--maroon);">squoosh.app</a>
+      (free, browser-based) to compress photos before adding them. This keeps your site fast on mobile.
+    </div>
+  </div>
+
+  <!-- ── STEP 1: PICK FILES ── -->
+  <div class="card">
+    <h2>📂 Step 1 — Pick Your Venue Photos</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">
+      Select the photos you already copied into your <span class="folder-path">images/</span> folder.
+      This gives you a live preview so you can add captions before generating the JSON.
+    </p>
+
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" multiple accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Select venue photos">
+      <span class="drop-zone-icon" aria-hidden="true">🖼️</span>
+      <p><strong>Click here</strong> or drag &amp; drop your photos</p>
+      <p style="font-size:.76rem;margin-top:6px;opacity:.65;">JPG · PNG · WebP · GIF — select multiple at once</p>
+    </div>
+
+    <!-- Preview grid -->
+    <div id="preview-grid">
+      <div class="empty-state" id="empty-state">
+        <div class="icon" aria-hidden="true">📷</div>
+        <p>No photos selected yet. Pick files above.</p>
+      </div>
+    </div>
+
+    <div class="toolbar" id="toolbar" style="display:none;">
+      <button class="btn btn-maroon btn-sm" id="clear-all-btn" type="button">🗑️ Clear All</button>
+      <span class="item-count" id="item-count"></span>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: GENERATE JSON ── -->
+  <div class="card">
+    <h2>⚙️ Step 2 — Generate gallery.json</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">
+      After adding captions above, click the button to generate the correct JSON.
+      The file paths will use <code>images/filename.jpg</code> format automatically.
+    </p>
+
+    <button class="btn btn-gold" id="generate-btn" type="button" disabled>
+      ✨ Generate gallery.json
+    </button>
+
+    <div id="json-output-wrap">
+      <br>
+      <div class="callout callout-success" style="margin-bottom:12px;">
+        <strong>✅ Your gallery.json is ready!</strong>
+        Copy everything below and paste it into your <code>gallery.json</code> file (replace all existing content), then save it.
+      </div>
+
+      <textarea id="json-output" readonly aria-label="Generated gallery.json content" spellcheck="false"></textarea>
+
+      <div class="copy-btn-row">
+        <button class="btn btn-gold" id="copy-json-btn" type="button">📋 Copy to Clipboard</button>
+        <button class="btn btn-outline btn-sm" id="download-btn" type="button">⬇️ Download gallery.json</button>
+        <span class="toast" id="copy-toast">✓ Copied!</span>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:16px;margin-bottom:0;">
+        <strong>📁 Next: Paste it into gallery.json</strong>
+        Open <code>gallery.json</code> in Notepad or any text editor, select all (Ctrl+A), paste (Ctrl+V), and save. Then re-deploy your site folder to Netlify.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/*
+  ════════════════════════════════════════════════════════════
+  Smart Guest House — Local Photo Manager (upload.html)
+  ════════════════════════════════════════════════════════════
+  100% local — no network calls, no external services, no API keys.
+  Photos stay on your own computer in the images/ folder.
+  This tool only helps you:
+    1. Preview selected images
+    2. Add captions
+    3. Generate the correct gallery.json entries
+  The owner then pastes the JSON into gallery.json and re-deploys.
+  ════════════════════════════════════════════════════════════
+*/
+'use strict';
+
+const dropZone    = document.getElementById('drop-zone');
+const fileInput   = document.getElementById('file-input');
+const previewGrid = document.getElementById('preview-grid');
+const emptyState  = document.getElementById('empty-state');
+const toolbar     = document.getElementById('toolbar');
+const itemCount   = document.getElementById('item-count');
+const clearAllBtn = document.getElementById('clear-all-btn');
+const generateBtn = document.getElementById('generate-btn');
+const jsonOutput  = document.getElementById('json-output');
+const jsonWrap    = document.getElementById('json-output-wrap');
+const copyJsonBtn = document.getElementById('copy-json-btn');
+const downloadBtn = document.getElementById('download-btn');
+const copyToast   = document.getElementById('copy-toast');
+
+// Holds { file, objectURL, caption } for each selected photo
+let selectedItems = [];
+
+/* ── Drag & drop ── */
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles([...e.dataTransfer.files]);
+});
+
+fileInput.addEventListener('change', () => {
+  handleFiles([...fileInput.files]);
+  fileInput.value = ''; // reset so same file can be re-selected
+});
+
+/* ── Process selected files ── */
+function handleFiles(files) {
+  const imageFiles = files.filter(f => f.type.startsWith('image/'));
+  if (!imageFiles.length) return;
+
+  imageFiles.forEach(file => {
+    // Avoid duplicates by filename
+    if (selectedItems.find(i => i.file.name === file.name)) return;
+    const objectURL = URL.createObjectURL(file);
+    selectedItems.push({ file, objectURL, caption: '' });
+  });
+
+  renderGrid();
+}
+
+/* ── Render preview grid ── */
+function renderGrid() {
+  previewGrid.innerHTML = '';
+
+  if (!selectedItems.length) {
+    previewGrid.appendChild(emptyState);
+    toolbar.style.display = 'none';
+    generateBtn.disabled = true;
+    jsonWrap.style.display = 'none';
+    return;
+  }
+
+  toolbar.style.display = 'flex';
+  generateBtn.disabled = false;
+  itemCount.textContent = selectedItems.length + ' photo' + (selectedItems.length !== 1 ? 's' : '') + ' selected';
+
+  selectedItems.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.dataset.idx = idx;
+
+    div.innerHTML = `
+      <img class="preview-thumb" src="${item.objectURL}"
+           alt="Preview of ${escHtml(item.file.name)}" loading="lazy">
+      <div class="preview-body">
+        <div class="preview-filename" title="${escHtml(item.file.name)}">${escHtml(item.file.name)}</div>
+        <input
+          class="preview-caption-input"
+          type="text"
+          placeholder="Caption (optional)"
+          value="${escHtml(item.caption)}"
+          maxlength="100"
+          aria-label="Caption for ${escHtml(item.file.name)}"
+          data-idx="${idx}">
+        <button class="remove-btn" type="button" data-idx="${idx}" aria-label="Remove ${escHtml(item.file.name)}">
+          ✕ Remove
+        </button>
+      </div>
+    `;
+
+    // Caption change
+    div.querySelector('.preview-caption-input').addEventListener('input', function() {
+      selectedItems[+this.dataset.idx].caption = this.value;
+    });
+
+    // Remove
+    div.querySelector('.remove-btn').addEventListener('click', function() {
+      const i = +this.dataset.idx;
+      URL.revokeObjectURL(selectedItems[i].objectURL);
+      selectedItems.splice(i, 1);
+      renderGrid();
+    });
+
+    previewGrid.appendChild(div);
+  });
+}
+
+/* ── Clear all ── */
+clearAllBtn.addEventListener('click', () => {
+  selectedItems.forEach(i => URL.revokeObjectURL(i.objectURL));
+  selectedItems = [];
+  renderGrid();
+});
+
+/* ── Generate gallery.json ── */
+generateBtn.addEventListener('click', () => {
+  if (!selectedItems.length) return;
+
+  const entries = selectedItems.map(item => {
+    // Build images/filename path from the file's actual name
+    const name = item.file.name.replace(/\\/g, '/');
+    const path = 'images/' + name;
+    const entry = { url: path };
+    if (item.caption && item.caption.trim()) entry.caption = item.caption.trim();
+    return entry;
+  });
+
+  const json = JSON.stringify(entries, null, 2);
+  jsonOutput.value = json;
+  jsonWrap.style.display = 'block';
+  jsonOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ── Copy JSON ── */
+copyJsonBtn.addEventListener('click', () => {
+  const text = jsonOutput.value;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(showCopied).catch(() => {
+    jsonOutput.select();
+    document.execCommand('copy');
+    showCopied();
+  });
+});
+
+function showCopied() {
+  copyToast.classList.add('show');
+  copyJsonBtn.textContent = '✓ Copied!';
+  setTimeout(() => {
+    copyToast.classList.remove('show');
+    copyJsonBtn.textContent = '📋 Copy to Clipboard';
+  }, 2600);
+}
+
+/* ── Download gallery.json ── */
+downloadBtn.addEventListener('click', () => {
+  const text = jsonOutput.value;
+  if (!text) return;
+  const blob = new Blob([text], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'gallery.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+/* ── XSS safety ── */
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Initial render
+renderGrid();
+</script>
+</body>
+</html>
