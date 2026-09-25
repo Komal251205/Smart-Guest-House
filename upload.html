@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Gallery Photos — Smart Guest House</title>
+  <title>Upload Photos — Smart Guest House</title>
   <meta name="robots" content="noindex, nofollow">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --gold:     #C9902B;
@@ -22,99 +20,94 @@
       --text:     #2A1505;
       --muted:    #8A6040;
       --green:    #15803d;
+      --red:      #dc2626;
       --radius:   12px;
       --shadow:   0 8px 32px rgba(90,30,10,.13);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
-    /* Header */
     .page-header {
       background: linear-gradient(135deg, var(--maroon-d), var(--maroon));
-      padding: 28px 24px;
+      padding: 24px 20px;
       text-align: center;
     }
-    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold-l); margin-bottom: 6px; }
-    .page-header p  { font-size: .88rem; color: rgba(255,255,255,.72); }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--gold-l); margin-bottom: 4px; }
+    .page-header p  { font-size: .85rem; color: rgba(255,255,255,.7); }
 
-    main { max-width: 860px; margin: 0 auto; padding: 36px 20px 80px; }
+    main { max-width: 820px; margin: 0 auto; padding: 32px 20px 80px; }
 
-    a.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 600; color: var(--maroon); margin-bottom: 24px; transition: gap .2s; }
-    a.back-link:hover { gap: 10px; }
+    a.back { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 600; color: var(--maroon); margin-bottom: 24px; }
+    a.back:hover { gap: 10px; }
 
-    /* Cards */
-    .card { background: #fff; border: 1.5px solid rgba(201,144,43,.28); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); }
-    .card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--maroon); margin-bottom: 14px; }
+    .card { background: #fff; border: 1.5px solid rgba(201,144,43,.25); border-radius: var(--radius); padding: 24px; margin-bottom: 22px; box-shadow: var(--shadow); }
+    .card h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--maroon); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
-    /* Steps */
-    .steps { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 14px; }
-    .steps li {
-      counter-increment: step;
-      display: flex; align-items: flex-start; gap: 14px;
-      font-size: .9rem; color: var(--muted); line-height: 1.6;
+    .callout { border-radius: 8px; padding: 14px 16px; font-size: .85rem; line-height: 1.65; margin-bottom: 14px; }
+    .callout-info    { background: #fffbeb; border-left: 4px solid var(--gold); }
+    .callout-success { background: #f0fdf4; border-left: 4px solid var(--green); color: #14532d; }
+    .callout-error   { background: #fef2f2; border-left: 4px solid var(--red);   color: #7f1d1d; }
+    .callout strong  { display: block; margin-bottom: 3px; }
+
+    /* Form */
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .form-group label { font-size: .82rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      border: 1.5px solid rgba(201,144,43,.35);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .9rem;
+      color: var(--text);
+      background: var(--cream);
+      transition: border-color .2s;
+      width: 100%;
     }
-    .steps li::before {
-      content: counter(step);
-      flex-shrink: 0;
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--gold-l), var(--gold));
-      color: #fff; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: .8rem;
-      margin-top: 1px;
-    }
-    .steps li strong { color: var(--text); }
-    code { background: var(--cream-d); border-radius: 4px; padding: 1px 6px; font-size: .85em; color: var(--maroon); word-break: break-all; }
+    .form-group input:focus { outline: none; border-color: var(--gold); background: #fff; }
+    .hint { font-size: .75rem; color: var(--muted); margin-top: 3px; }
+    .hint a { color: var(--gold); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; border-radius: 50px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: .88rem; cursor: pointer; border: 2px solid transparent; transition: all .22s; white-space: nowrap; }
+    .btn-gold   { background: linear-gradient(135deg, var(--gold-l), var(--gold)); color: #fff; border-color: var(--gold); box-shadow: 0 4px 16px rgba(201,144,43,.28); }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,144,43,.4); }
+    .btn-gold:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-outline { background: transparent; color: var(--maroon); border-color: var(--maroon); }
+    .btn-outline:hover { background: var(--maroon); color: #fff; }
+    .btn-sm { padding: 7px 16px; font-size: .8rem; }
+    .btn-danger { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn-danger:hover { background: #b91c1c; }
+
+    /* Token row */
+    .token-row { display: flex; gap: 10px; align-items: flex-end; }
+    .token-row .form-group { flex: 1; margin-bottom: 0; }
 
     /* Drop zone */
     .drop-zone {
       border: 2.5px dashed var(--gold);
       border-radius: var(--radius);
-      padding: 44px 24px;
+      padding: 40px 20px;
       text-align: center;
       cursor: pointer;
-      transition: all .25s;
+      transition: all .22s;
       background: var(--cream);
       position: relative;
     }
-    .drop-zone.dragover { border-color: var(--maroon); background: #fff8e6; transform: scale(1.01); }
-    .drop-zone-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
-    .drop-zone p { margin: 0; font-size: .9rem; color: var(--muted); }
-    .drop-zone p strong { color: var(--text); }
+    .drop-zone.over { border-color: var(--maroon); background: #fff8e6; }
     .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; border-radius: 50px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: .88rem; cursor: pointer; border: 2px solid transparent; transition: all .22s; }
-    .btn-gold { background: linear-gradient(135deg, var(--gold-l), var(--gold)); color: #fff; border-color: var(--gold); box-shadow: 0 4px 18px rgba(201,144,43,.28); }
-    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,144,43,.4); }
-    .btn-maroon { background: var(--maroon); color: #fff; border-color: var(--maroon); }
-    .btn-maroon:hover { background: var(--maroon-d); transform: translateY(-2px); }
-    .btn-outline { background: transparent; color: var(--maroon); border-color: var(--maroon); }
-    .btn-outline:hover { background: var(--maroon); color: #fff; }
-    .btn-sm { padding: 6px 14px; font-size: .78rem; }
-    .btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
-    .btn-danger:hover { background: #b91c1c; }
-    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .drop-zone-icon { font-size: 2.8rem; margin-bottom: 10px; display: block; }
+    .drop-zone p { font-size: .9rem; color: var(--muted); }
+    .drop-zone p strong { color: var(--text); }
 
     /* Preview grid */
-    #preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 10px; }
-
-    .preview-item {
-      border: 1.5px solid rgba(201,144,43,.25);
-      border-radius: 10px;
-      overflow: hidden;
-      background: var(--cream-d);
-      animation: slideIn .3s ease;
-    }
-    @keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-
-    .preview-thumb {
-      width: 100%; aspect-ratio: 4/3; object-fit: cover;
-      display: block; border-bottom: 1px solid rgba(201,144,43,.2);
-    }
-    .preview-body { padding: 10px 12px; }
-    .preview-filename { font-size: .78rem; font-weight: 600; color: var(--text); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .preview-caption-input {
+    #preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 13px; margin-top: 16px; }
+    .preview-item { border: 1.5px solid rgba(201,144,43,.22); border-radius: 10px; overflow: hidden; background: var(--cream-d); position: relative; }
+    .preview-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .preview-body  { padding: 10px 11px; }
+    .preview-name  { font-size: .76rem; font-weight: 600; color: var(--text); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .preview-size  { font-size: .7rem; color: var(--muted); margin-bottom: 7px; }
+    .caption-input {
       width: 100%;
       border: 1.5px solid rgba(201,144,43,.3);
       border-radius: 7px;
@@ -126,401 +119,460 @@
       transition: border-color .2s;
       margin-bottom: 8px;
     }
-    .preview-caption-input:focus { outline: none; border-color: var(--gold); }
-    .preview-caption-input::placeholder { color: #bbb; }
+    .caption-input:focus { outline: none; border-color: var(--gold); }
+    .caption-input::placeholder { color: #bbb; }
+    .remove-btn { background: none; border: none; cursor: pointer; font-size: .74rem; color: var(--red); font-weight: 600; }
 
-    .remove-btn { background: none; border: none; cursor: pointer; font-size: .75rem; color: #dc2626; font-weight: 600; transition: opacity .2s; }
-    .remove-btn:hover { opacity: .75; }
-
-    /* JSON output */
-    #json-output-wrap { display: none; }
-    #json-output {
-      width: 100%;
-      min-height: 180px;
-      border: 1.5px solid rgba(201,144,43,.35);
-      border-radius: 10px;
-      padding: 14px;
-      font-family: 'Courier New', monospace;
-      font-size: .83rem;
-      color: var(--text);
-      background: var(--cream);
-      resize: vertical;
-      line-height: 1.6;
-    }
-    #json-output:focus { outline: none; border-color: var(--gold); }
-
-    .copy-btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-
-    .toast {
-      display: none;
-      background: var(--green);
-      color: #fff;
-      border-radius: 50px;
-      padding: 6px 18px;
+    /* Status overlay on preview item */
+    .preview-status {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-size: .8rem;
       font-weight: 600;
-      animation: fadeIn .2s;
+      border-radius: 10px;
     }
-    .toast.show { display: inline-block; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .preview-status.uploading { background: rgba(201,144,43,.85); color: #fff; }
+    .preview-status.done      { background: rgba(21,128,61,.85);  color: #fff; }
+    .preview-status.error     { background: rgba(220,38,38,.85);  color: #fff; }
+    .preview-status .status-icon { font-size: 1.6rem; margin-bottom: 6px; }
 
-    /* Instruction callout */
-    .callout {
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      font-size: .86rem;
-      line-height: 1.65;
-      margin-bottom: 16px;
-    }
-    .callout-info    { background: #fffbeb; border-left: 4px solid var(--gold); }
-    .callout-success { background: #f0fdf4; border-left: 4px solid var(--green); }
-    .callout-warn    { background: #fef2f2; border-left: 4px solid #dc2626; }
-    .callout strong  { display: block; margin-bottom: 4px; color: var(--text); }
+    /* Progress bar */
+    .progress-bar-wrap { height: 6px; background: rgba(201,144,43,.2); border-radius: 3px; margin-top: 8px; overflow: hidden; display: none; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold-l), var(--gold)); border-radius: 3px; width: 0%; transition: width .3s; }
 
-    .folder-path {
-      display: inline-block;
-      background: var(--maroon-d);
-      color: var(--gold-p);
-      border-radius: 6px;
-      padding: 2px 9px;
-      font-family: monospace;
-      font-size: .88em;
-    }
-
-    /* empty state */
-    .empty-state { text-align: center; padding: 20px; color: var(--muted); font-size: .88rem; }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    /* Log */
+    #upload-log { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .log-item { border-radius: 8px; padding: 10px 14px; font-size: .83rem; line-height: 1.5; }
+    .log-ok   { background: #f0fdf4; border-left: 3px solid var(--green); color: #14532d; }
+    .log-err  { background: #fef2f2; border-left: 3px solid var(--red);   color: #7f1d1d; }
+    .log-info { background: #fffbeb; border-left: 3px solid var(--gold);   color: var(--text); }
 
     /* Toolbar */
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
-    .item-count { font-size: .82rem; color: var(--muted); margin-left: auto; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+    .file-count { margin-left: auto; font-size: .82rem; color: var(--muted); }
+
+    .empty-state { text-align: center; padding: 20px; color: var(--muted); font-size: .88rem; }
+    .empty-state .icon { font-size: 2.2rem; margin-bottom: 8px; }
+
+    details summary { cursor: pointer; font-size: .83rem; font-weight: 600; color: var(--gold); user-select: none; }
+    details summary:hover { color: var(--maroon); }
+    details .detail-body { margin-top: 12px; font-size: .83rem; color: var(--muted); line-height: 1.75; }
+    details .detail-body ol { padding-left: 18px; }
+    details .detail-body code { background: var(--cream-d); border-radius: 4px; padding: 1px 6px; font-size: .85em; color: var(--maroon); }
 
     @media (max-width: 560px) {
       #preview-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 380px) {
-      #preview-grid { grid-template-columns: 1fr; }
+      .token-row { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
 <body>
 
 <header class="page-header">
-  <h1>🏛️ Smart Guest House — Photo Manager</h1>
-  <p>Add real venue photos to the gallery · Owner use only</p>
+  <h1>🏛️ Photo Upload — Smart Guest House</h1>
+  <p>Upload venue photos directly to the website · Owner use only</p>
 </header>
 
 <main>
-  <a href="index.html" class="back-link">← Back to Website</a>
+  <a href="index.html" class="back">← Back to Website</a>
 
   <!-- ── HOW IT WORKS ── -->
   <div class="card">
-    <h2>📖 How to Add Photos to Your Gallery</h2>
-
+    <h2>⚡ How It Works</h2>
     <div class="callout callout-info">
-      <strong>No accounts, no internet service needed.</strong>
-      Photos live in your own <span class="folder-path">images/</span> folder.
-      This tool helps you preview them and build the correct <code>gallery.json</code> in seconds.
+      <strong>No app, no FTP, no git commands needed.</strong>
+      Photos upload directly into your GitHub repo. Vercel auto-deploys in ~30 seconds and they appear live on the website.
     </div>
 
-    <ol class="steps">
-      <li>
-        <div>
-          <strong>Copy your venue photos into the <span class="folder-path">images/</span> folder</strong>
-          — the same folder that already contains <code>hero.jpg</code>.
-          Use simple file names with no spaces, e.g. <code>stage.jpg</code>, <code>seating.jpg</code>.
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Open this page in your browser</strong> (open the file <code>upload.html</code> locally)
-          and drag your photos into the box below, or click to pick them. This is only for preview — photos are NOT uploaded anywhere.
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Add a caption for each photo</strong> (optional), then click <em>"Generate gallery.json"</em>.
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Copy the generated JSON</strong> and paste it into your <code>gallery.json</code> file
-          (replacing all existing content). Save the file.
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Re-deploy your site</strong> — run <code>vercel --prod</code> inside the
-          <span class="folder-path">Smart-Guest-House</span> folder, or push to GitHub and
-          <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" style="color:var(--gold);font-weight:600;">Vercel</a>
-          auto-deploys on every commit. Your gallery updates instantly.
-        </div>
-      </li>
-    </ol>
-
-    <div class="callout callout-warn" style="margin-top:16px;margin-bottom:0;">
-      <strong>⚠️ Tip: Keep photos under 500 KB each</strong>
-      Use <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" style="color:var(--maroon);">squoosh.app</a>
-      (free, browser-based) to compress photos before adding them. This keeps your site fast on mobile.
-    </div>
+    <details>
+      <summary>📖 One-time setup — get your GitHub Token</summary>
+      <div class="detail-body">
+        <ol>
+          <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener noreferrer" style="color:var(--gold);">github.com/settings/tokens/new</a></li>
+          <li>Set a note (e.g. <em>Smart Guest House Upload</em>), set expiration to <strong>No expiration</strong></li>
+          <li>Under <strong>Scopes</strong>, tick only <code>repo</code></li>
+          <li>Click <strong>Generate token</strong> — copy the token (starts with <code>ghp_</code>)</li>
+          <li>Paste it below — it saves in this browser only, never leaves your device except to talk to GitHub</li>
+        </ol>
+      </div>
+    </details>
   </div>
 
-  <!-- ── STEP 1: PICK FILES ── -->
+  <!-- ── GITHUB TOKEN ── -->
   <div class="card">
-    <h2>📂 Step 1 — Pick Your Venue Photos</h2>
+    <h2>🔑 GitHub Access Token</h2>
+    <div class="token-row">
+      <div class="form-group">
+        <label for="gh-token">Personal Access Token</label>
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+        <span class="hint">
+          Saved in this browser only.
+          <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener noreferrer">Create one here</a>
+          — tick only the <strong>repo</strong> scope.
+        </span>
+      </div>
+      <button class="btn btn-outline btn-sm" id="save-token-btn" type="button" style="margin-bottom:18px;">💾 Save</button>
+    </div>
+    <div id="token-status"></div>
+  </div>
+
+  <!-- ── PICK PHOTOS ── -->
+  <div class="card">
+    <h2>🖼️ Pick Photos to Upload</h2>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">
-      Select the photos you already copied into your <span class="folder-path">images/</span> folder.
-      This gives you a live preview so you can add captions before generating the JSON.
+      Select photos from your phone or PC. They will be uploaded to the <code>images/</code> folder and added to the gallery automatically.
     </p>
 
     <div class="drop-zone" id="drop-zone">
       <input type="file" id="file-input" multiple accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Select venue photos">
-      <span class="drop-zone-icon" aria-hidden="true">🖼️</span>
-      <p><strong>Click here</strong> or drag &amp; drop your photos</p>
-      <p style="font-size:.76rem;margin-top:6px;opacity:.65;">JPG · PNG · WebP · GIF — select multiple at once</p>
+      <span class="drop-zone-icon" aria-hidden="true">📷</span>
+      <p><strong>Tap here</strong> to pick photos</p>
+      <p style="font-size:.76rem;margin-top:5px;opacity:.65;">JPG · PNG · WebP — multiple at once</p>
     </div>
 
-    <!-- Preview grid -->
     <div id="preview-grid">
       <div class="empty-state" id="empty-state">
-        <div class="icon" aria-hidden="true">📷</div>
-        <p>No photos selected yet. Pick files above.</p>
+        <div class="icon" aria-hidden="true">🌸</div>
+        <p>No photos selected yet.</p>
       </div>
     </div>
 
     <div class="toolbar" id="toolbar" style="display:none;">
-      <button class="btn btn-maroon btn-sm" id="clear-all-btn" type="button">🗑️ Clear All</button>
-      <span class="item-count" id="item-count"></span>
+      <button class="btn btn-danger btn-sm" id="clear-btn" type="button">🗑️ Clear All</button>
+      <span class="file-count" id="file-count"></span>
     </div>
   </div>
 
-  <!-- ── STEP 2: GENERATE JSON ── -->
+  <!-- ── UPLOAD ── -->
   <div class="card">
-    <h2>⚙️ Step 2 — Generate gallery.json</h2>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">
-      After adding captions above, click the button to generate the correct JSON.
-      The file paths will use <code>images/filename.jpg</code> format automatically.
-    </p>
+    <h2>🚀 Upload to Website</h2>
 
-    <button class="btn btn-gold" id="generate-btn" type="button" disabled>
-      ✨ Generate gallery.json
+    <div class="progress-bar-wrap" id="progress-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <button class="btn btn-gold" id="upload-btn" type="button" disabled style="margin-top:14px;font-size:1rem;padding:13px 30px;">
+      ☁️ Upload Photos Now
     </button>
 
-    <div id="json-output-wrap">
-      <br>
-      <div class="callout callout-success" style="margin-bottom:12px;">
-        <strong>✅ Your gallery.json is ready!</strong>
-        Copy everything below and paste it into your <code>gallery.json</code> file (replace all existing content), then save it.
-      </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:10px;">
+      After upload, Vercel auto-deploys in ~30 seconds. Then refresh the main site to see the new photos.
+    </p>
 
-      <textarea id="json-output" readonly aria-label="Generated gallery.json content" spellcheck="false"></textarea>
-
-      <div class="copy-btn-row">
-        <button class="btn btn-gold" id="copy-json-btn" type="button">📋 Copy to Clipboard</button>
-        <button class="btn btn-outline btn-sm" id="download-btn" type="button">⬇️ Download gallery.json</button>
-        <span class="toast" id="copy-toast">✓ Copied!</span>
-      </div>
-
-      <div class="callout callout-info" style="margin-top:16px;margin-bottom:0;">
-        <strong>📁 Next: Paste it into gallery.json</strong>
-        Open <code>gallery.json</code> in Notepad or any text editor, select all (Ctrl+A), paste (Ctrl+V), and save. Then re-deploy your site folder to Netlify.
-      </div>
-    </div>
+    <div id="upload-log"></div>
   </div>
 
 </main>
 
 <script>
 /*
-  ════════════════════════════════════════════════════════════
-  Smart Guest House — Local Photo Manager (upload.html)
-  ════════════════════════════════════════════════════════════
-  100% local — no network calls, no external services, no API keys.
-  Photos stay on your own computer in the images/ folder.
-  This tool only helps you:
-    1. Preview selected images
-    2. Add captions
-    3. Generate the correct gallery.json entries
-  The owner then pastes the JSON into gallery.json and re-deploys.
-  ════════════════════════════════════════════════════════════
+  ══════════════════════════════════════════════════════════════
+  Smart Guest House — Website Photo Uploader
+  ══════════════════════════════════════════════════════════════
+  Flow:
+    1. Owner enters a GitHub Personal Access Token (repo scope).
+       Token is stored ONLY in localStorage — never sent anywhere
+       except api.github.com over HTTPS.
+    2. Owner picks photos. JS reads them as base64.
+    3. On upload:
+       a. Each image is committed to images/{filename} via GitHub API.
+       b. gallery.json is read from the repo, updated with new entries,
+          and committed back.
+    4. Vercel detects the new commit → auto-deploys → photos go live.
+  ══════════════════════════════════════════════════════════════
 */
 'use strict';
 
+/* ── Config — your repo ── */
+const GITHUB_OWNER = 'Komal251205';
+const GITHUB_REPO  = 'Smart-Guest-House';
+const GITHUB_BRANCH = 'main';
+
+/* ── DOM ── */
+const tokenInput  = document.getElementById('gh-token');
+const saveTokenBtn= document.getElementById('save-token-btn');
+const tokenStatus = document.getElementById('token-status');
 const dropZone    = document.getElementById('drop-zone');
 const fileInput   = document.getElementById('file-input');
 const previewGrid = document.getElementById('preview-grid');
 const emptyState  = document.getElementById('empty-state');
 const toolbar     = document.getElementById('toolbar');
-const itemCount   = document.getElementById('item-count');
-const clearAllBtn = document.getElementById('clear-all-btn');
-const generateBtn = document.getElementById('generate-btn');
-const jsonOutput  = document.getElementById('json-output');
-const jsonWrap    = document.getElementById('json-output-wrap');
-const copyJsonBtn = document.getElementById('copy-json-btn');
-const downloadBtn = document.getElementById('download-btn');
-const copyToast   = document.getElementById('copy-toast');
+const fileCount   = document.getElementById('file-count');
+const clearBtn    = document.getElementById('clear-btn');
+const uploadBtn   = document.getElementById('upload-btn');
+const progressWrap= document.getElementById('progress-wrap');
+const progressBar = document.getElementById('progress-bar');
+const uploadLog   = document.getElementById('upload-log');
 
-// Holds { file, objectURL, caption } for each selected photo
-let selectedItems = [];
+let selectedItems = []; // { file, objectURL, caption }
 
-/* ── Drag & drop ── */
-dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+/* ══ TOKEN MANAGEMENT ══ */
+const STORAGE_KEY = 'sgh_gh_token';
+
+function loadToken() {
+  const t = localStorage.getItem(STORAGE_KEY) || '';
+  if (t) {
+    tokenInput.value = t;
+    showTokenStatus('✅ Token loaded from browser storage.', 'success');
+  }
+}
+
+function saveToken() {
+  const t = tokenInput.value.trim();
+  if (!t) { showTokenStatus('⚠️ Please enter a token first.', 'error'); return; }
+  if (!t.startsWith('ghp_') && !t.startsWith('github_pat_')) {
+    showTokenStatus('⚠️ Token looks wrong — it should start with ghp_ or github_pat_', 'error');
+    return;
+  }
+  localStorage.setItem(STORAGE_KEY, t);
+  showTokenStatus('✅ Token saved in this browser. You won\'t need to re-enter it.', 'success');
+  checkUploadReady();
+}
+
+function getToken() { return tokenInput.value.trim() || localStorage.getItem(STORAGE_KEY) || ''; }
+
+function showTokenStatus(msg, type) {
+  tokenStatus.innerHTML = `<div class="callout callout-${type === 'success' ? 'success' : 'error'}" style="margin-top:10px;margin-bottom:0;">${msg}</div>`;
+}
+
+saveTokenBtn.addEventListener('click', saveToken);
+tokenInput.addEventListener('input', () => { tokenStatus.innerHTML = ''; checkUploadReady(); });
+loadToken();
+
+/* ══ FILE SELECTION ══ */
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
 dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
+  e.preventDefault(); dropZone.classList.remove('over');
   handleFiles([...e.dataTransfer.files]);
 });
+fileInput.addEventListener('change', () => { handleFiles([...fileInput.files]); fileInput.value = ''; });
 
-fileInput.addEventListener('change', () => {
-  handleFiles([...fileInput.files]);
-  fileInput.value = ''; // reset so same file can be re-selected
-});
-
-/* ── Process selected files ── */
 function handleFiles(files) {
-  const imageFiles = files.filter(f => f.type.startsWith('image/'));
-  if (!imageFiles.length) return;
-
-  imageFiles.forEach(file => {
-    // Avoid duplicates by filename
+  const images = files.filter(f => f.type.startsWith('image/'));
+  images.forEach(file => {
     if (selectedItems.find(i => i.file.name === file.name)) return;
-    const objectURL = URL.createObjectURL(file);
-    selectedItems.push({ file, objectURL, caption: '' });
+    selectedItems.push({ file, objectURL: URL.createObjectURL(file), caption: '' });
   });
-
   renderGrid();
 }
 
-/* ── Render preview grid ── */
 function renderGrid() {
   previewGrid.innerHTML = '';
-
   if (!selectedItems.length) {
     previewGrid.appendChild(emptyState);
     toolbar.style.display = 'none';
-    generateBtn.disabled = true;
-    jsonWrap.style.display = 'none';
+    checkUploadReady();
     return;
   }
-
   toolbar.style.display = 'flex';
-  generateBtn.disabled = false;
-  itemCount.textContent = selectedItems.length + ' photo' + (selectedItems.length !== 1 ? 's' : '') + ' selected';
+  fileCount.textContent = selectedItems.length + ' photo' + (selectedItems.length !== 1 ? 's' : '') + ' selected';
 
   selectedItems.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = 'preview-item';
-    div.dataset.idx = idx;
-
+    div.id = 'pi-' + idx;
     div.innerHTML = `
-      <img class="preview-thumb" src="${item.objectURL}"
-           alt="Preview of ${escHtml(item.file.name)}" loading="lazy">
+      <img class="preview-thumb" src="${item.objectURL}" alt="Preview" loading="lazy">
       <div class="preview-body">
-        <div class="preview-filename" title="${escHtml(item.file.name)}">${escHtml(item.file.name)}</div>
-        <input
-          class="preview-caption-input"
-          type="text"
-          placeholder="Caption (optional)"
-          value="${escHtml(item.caption)}"
-          maxlength="100"
-          aria-label="Caption for ${escHtml(item.file.name)}"
-          data-idx="${idx}">
-        <button class="remove-btn" type="button" data-idx="${idx}" aria-label="Remove ${escHtml(item.file.name)}">
-          ✕ Remove
-        </button>
-      </div>
-    `;
-
-    // Caption change
-    div.querySelector('.preview-caption-input').addEventListener('input', function() {
+        <div class="preview-name" title="${esc(item.file.name)}">${esc(item.file.name)}</div>
+        <div class="preview-size">${fmtSize(item.file.size)}</div>
+        <input class="caption-input" type="text" placeholder="Caption (optional)"
+               value="${esc(item.caption)}" maxlength="100" data-idx="${idx}"
+               aria-label="Caption for ${esc(item.file.name)}">
+        <button class="remove-btn" type="button" data-idx="${idx}">✕ Remove</button>
+      </div>`;
+    div.querySelector('.caption-input').addEventListener('input', function() {
       selectedItems[+this.dataset.idx].caption = this.value;
     });
-
-    // Remove
     div.querySelector('.remove-btn').addEventListener('click', function() {
       const i = +this.dataset.idx;
       URL.revokeObjectURL(selectedItems[i].objectURL);
       selectedItems.splice(i, 1);
       renderGrid();
     });
-
     previewGrid.appendChild(div);
   });
+  checkUploadReady();
 }
 
-/* ── Clear all ── */
-clearAllBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', () => {
   selectedItems.forEach(i => URL.revokeObjectURL(i.objectURL));
   selectedItems = [];
   renderGrid();
 });
 
-/* ── Generate gallery.json ── */
-generateBtn.addEventListener('click', () => {
-  if (!selectedItems.length) return;
-
-  const entries = selectedItems.map(item => {
-    // Build images/filename path from the file's actual name
-    const name = item.file.name.replace(/\\/g, '/');
-    const path = 'images/' + name;
-    const entry = { url: path };
-    if (item.caption && item.caption.trim()) entry.caption = item.caption.trim();
-    return entry;
-  });
-
-  const json = JSON.stringify(entries, null, 2);
-  jsonOutput.value = json;
-  jsonWrap.style.display = 'block';
-  jsonOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-
-/* ── Copy JSON ── */
-copyJsonBtn.addEventListener('click', () => {
-  const text = jsonOutput.value;
-  if (!text) return;
-  navigator.clipboard.writeText(text).then(showCopied).catch(() => {
-    jsonOutput.select();
-    document.execCommand('copy');
-    showCopied();
-  });
-});
-
-function showCopied() {
-  copyToast.classList.add('show');
-  copyJsonBtn.textContent = '✓ Copied!';
-  setTimeout(() => {
-    copyToast.classList.remove('show');
-    copyJsonBtn.textContent = '📋 Copy to Clipboard';
-  }, 2600);
+function checkUploadReady() {
+  uploadBtn.disabled = !(selectedItems.length > 0 && getToken());
 }
 
-/* ── Download gallery.json ── */
-downloadBtn.addEventListener('click', () => {
-  const text = jsonOutput.value;
-  if (!text) return;
-  const blob = new Blob([text], { type: 'application/json' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = 'gallery.json';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-});
+/* ══ GITHUB API HELPERS ══ */
+const API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
 
-/* ── XSS safety ── */
-function escHtml(str) {
+async function ghGet(path) {
+  const r = await fetch(`${API}/${path}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: 'token ' + getToken(), Accept: 'application/vnd.github.v3+json' }
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub API error ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+async function ghPut(path, contentBase64, message, sha) {
+  const body = { message, content: contentBase64, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(`${API}/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: 'token ' + getToken(),
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`GitHub PUT error ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]); // strip data:...;base64,
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function sanitizeFilename(name) {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9.\-_]/g, '')
+    .replace(/\.{2,}/g, '.');
+}
+
+/* ══ UPLOAD ══ */
+uploadBtn.addEventListener('click', runUpload);
+
+async function runUpload() {
+  const token = getToken();
+  if (!token)            { addLog('error', '⚠️ No GitHub token set. Please save your token first.'); return; }
+  if (!selectedItems.length) { addLog('error', '⚠️ No photos selected.'); return; }
+
+  uploadBtn.disabled = true;
+  uploadLog.innerHTML = '';
+  progressWrap.style.display = 'block';
+  setProgress(0);
+
+  const total = selectedItems.length;
+  const newEntries = [];
+
+  addLog('info', `Starting upload of ${total} photo${total !== 1 ? 's' : ''}…`);
+
+  /* ── Step 1: upload each image ── */
+  for (let i = 0; i < total; i++) {
+    const item = selectedItems[i];
+    const safeName = sanitizeFilename(item.file.name);
+    const ghPath   = `images/${safeName}`;
+
+    setItemStatus(i, 'uploading', '⏳ Uploading…');
+
+    try {
+      const base64 = await fileToBase64(item.file);
+
+      // Check if file already exists (need its SHA to overwrite)
+      const existing = await ghGet(ghPath);
+      const sha = existing ? existing.sha : undefined;
+
+      await ghPut(ghPath, base64, `Upload venue photo: ${safeName}`, sha);
+
+      newEntries.push({ url: ghPath, caption: item.caption.trim() || safeName.replace(/\.[^.]+$/, '').replace(/-/g, ' ') });
+      setItemStatus(i, 'done', '✅ Uploaded!');
+      addLog('ok', `✅ ${safeName} uploaded successfully.`);
+    } catch (err) {
+      setItemStatus(i, 'error', '❌ Failed');
+      addLog('error', `❌ ${item.file.name} — ${err.message}`);
+    }
+
+    setProgress(Math.round(((i + 1) / (total + 1)) * 90)); // leave 10% for gallery.json
+  }
+
+  if (!newEntries.length) {
+    addLog('error', '⚠️ No photos were uploaded. Check your token and try again.');
+    uploadBtn.disabled = false;
+    return;
+  }
+
+  /* ── Step 2: update gallery.json ── */
+  addLog('info', '📝 Updating gallery.json…');
+  try {
+    const existing = await ghGet('gallery.json');
+    let currentEntries = [];
+    if (existing && existing.content) {
+      try {
+        currentEntries = JSON.parse(atob(existing.content.replace(/\n/g, '')));
+        if (!Array.isArray(currentEntries)) currentEntries = [];
+      } catch { currentEntries = []; }
+    }
+
+    const merged = [...currentEntries, ...newEntries];
+    const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(merged, null, 2) + '\n')));
+    await ghPut('gallery.json', jsonBase64, `Add ${newEntries.length} photo(s) to gallery`, existing?.sha);
+
+    setProgress(100);
+    addLog('ok', `✅ gallery.json updated — ${newEntries.length} new photo${newEntries.length !== 1 ? 's' : ''} added.`);
+    addLog('ok', '🚀 Vercel will auto-deploy in ~30 seconds. Then refresh the main site to see your photos!');
+
+    // Clear uploaded items
+    selectedItems.forEach(i => URL.revokeObjectURL(i.objectURL));
+    selectedItems = [];
+    setTimeout(() => renderGrid(), 1200);
+
+  } catch (err) {
+    addLog('error', `❌ Could not update gallery.json — ${err.message}`);
+  }
+
+  uploadBtn.disabled = false;
+}
+
+/* ══ UI HELPERS ══ */
+function setProgress(pct) {
+  progressBar.style.width = pct + '%';
+}
+
+function setItemStatus(idx, type, text) {
+  const item = document.getElementById('pi-' + idx);
+  if (!item) return;
+  // Remove old status
+  item.querySelector('.preview-status')?.remove();
+  const div = document.createElement('div');
+  div.className = `preview-status ${type}`;
+  div.innerHTML = `<span class="status-icon">${type === 'uploading' ? '⏳' : type === 'done' ? '✅' : '❌'}</span><span>${text}</span>`;
+  item.appendChild(div);
+}
+
+function addLog(type, msg) {
+  const div = document.createElement('div');
+  div.className = `log-item log-${type === 'ok' ? 'ok' : type === 'error' ? 'err' : 'info'}`;
+  div.textContent = msg;
+  uploadLog.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function fmtSize(bytes) {
+  if (bytes < 1024)     return bytes + ' B';
+  if (bytes < 1048576)  return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+function esc(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
-// Initial render
-renderGrid();
 </script>
 </body>
 </html>
