@@ -1,16 +1,3 @@
-/**
- * Smart Guest House — Main JavaScript
- * Handles: sticky nav, mobile menu, scroll-reveal, gallery lightbox,
- *          gallery.json loading, floating button interactions.
- *
- * STATIC-SITE NOTE:
- *   This site has NO backend. Gallery images are managed via:
- *   1. upload.html + Cloudinary (image hosting)
- *   2. gallery.json (manually edited after each upload)
- *   3. This script reads gallery.json at page load to render the grid.
- *   No server, database, or secret API key is ever needed here.
- */
-
 'use strict';
 
 /* ──────────────────────────────────────────
@@ -24,11 +11,10 @@
     navbar.classList.toggle('scrolled', window.scrollY > 60);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // run once on load
+  onScroll();
 
-  // Active link highlighting
-  const sections  = document.querySelectorAll('section[id]');
-  const navLinks  = document.querySelectorAll('.navbar-nav a[href^="#"]');
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.navbar-nav a[href^="#"]');
 
   const linkObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -59,7 +45,6 @@
   hamburger.addEventListener('click', () => mobileNav.classList.contains('open') ? close() : open());
   overlay.addEventListener('click', close);
   mobileLinks.forEach(a => a.addEventListener('click', close));
-
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 })();
 
@@ -88,47 +73,20 @@
 (function initHeroBg() {
   const heroBg = document.querySelector('.hero-bg');
   if (!heroBg) return;
-  // Trigger CSS zoom-out after a brief delay to ensure paint
   requestAnimationFrame(() => {
     setTimeout(() => heroBg.classList.add('loaded'), 100);
   });
 })();
 
 /* ──────────────────────────────────────────
-   5. GALLERY — load from gallery.json
+   5. GALLERY — loads from gallery.json
+   Edit gallery.json to add/remove photos.
+   Each entry: { "url": "images/photo.jpg", "caption": "My Caption" }
 ────────────────────────────────────────── */
 (function initGallery() {
   const grid = document.getElementById('gallery-grid');
   if (!grid) return;
 
-  // Placeholder images used when gallery.json is empty or missing.
-  // These are inline SVG data-URIs so the layout works without any extra files.
-  const PLACEHOLDERS = [
-    { url: 'images/hero.jpg', caption: 'Grand Mandap & Stage Setup' },
-    { url: makePlaceholderSVG('Fairy Light Decor',     '#8B1A1A', '#F5D88A'), caption: 'Fairy Light Decor' },
-    { url: makePlaceholderSVG('Seating Arrangement',   '#5C0F0F', '#E8B84B'), caption: 'Seating Arrangement' },
-    { url: makePlaceholderSVG('Floral Entrance',       '#3D0B0B', '#C9902B'), caption: 'Floral Entrance' },
-    { url: makePlaceholderSVG('Reception Setup',       '#8B1A1A', '#F5D88A'), caption: 'Reception Setup' },
-    { url: makePlaceholderSVG('Catering Area',         '#5C0F0F', '#E8B84B'), caption: 'Catering Area' },
-    { url: makePlaceholderSVG('Venue at Night',        '#1A0505', '#C9902B'), caption: 'Venue at Night' },
-    { url: makePlaceholderSVG('Stage Backdrop',        '#3D0B0B', '#F5D88A'), caption: 'Stage Backdrop' },
-    { url: makePlaceholderSVG('Garden & Lawn View',    '#8B1A1A', '#E8B84B'), caption: 'Garden & Lawn View' },
-  ];
-
-  function makePlaceholderSVG(label, bgColor, textColor) {
-    // Returns a data-URI SVG placeholder with Indian-style decoration
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">
-      <rect width="400" height="300" fill="${bgColor}"/>
-      <rect x="8" y="8" width="384" height="284" fill="none" stroke="${textColor}" stroke-width="2" stroke-dasharray="10,5" rx="6"/>
-      <text x="200" y="130" text-anchor="middle" font-family="serif" font-size="36" fill="${textColor}" opacity="0.5">🌸</text>
-      <text x="200" y="170" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-weight="bold" fill="${textColor}">${label}</text>
-      <text x="200" y="195" text-anchor="middle" font-family="sans-serif" font-size="11" fill="${textColor}" opacity="0.7">Smart Guest House</text>
-      <text x="200" y="240" text-anchor="middle" font-family="sans-serif" font-size="10" fill="${textColor}" opacity="0.5">Replace with real photo</text>
-    </svg>`;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
-
-  // Build a gallery item element
   function createItem(item, index) {
     const div = document.createElement('div');
     div.className = 'gallery-item reveal';
@@ -141,8 +99,7 @@
       <img src="${escHtml(item.url)}"
            alt="${escHtml(item.caption || 'Smart Guest House event photo')}"
            loading="lazy"
-           decoding="async"
-           onerror="this.src=''">
+           decoding="async">
       <div class="gallery-overlay">
         <span class="gallery-caption">${escHtml(item.caption || '')}</span>
       </div>
@@ -150,51 +107,52 @@
     `;
 
     div.addEventListener('click',  () => openLightbox(index));
-    div.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(index); } });
+    div.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(index); }
+    });
 
     return div;
   }
 
   function renderGallery(items) {
     grid.innerHTML = '';
-    window.__galleryItems = items; // store for lightbox
+    window.__galleryItems = items;
+
+    if (!items.length) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-muted);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">📸</div>
+          <p style="font-size:.95rem;">Photos coming soon — check back shortly!</p>
+        </div>`;
+      return;
+    }
+
     items.forEach((item, i) => grid.appendChild(createItem(item, i)));
 
-    // re-observe for scroll-reveal
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
       });
     }, { threshold: 0.1 });
     grid.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    // Update note
-    const note = document.getElementById('gallery-note');
-    if (note) {
-      note.style.display = (items === PLACEHOLDERS) ? 'block' : 'none';
-    }
   }
 
-  // Fetch gallery.json; fall back to placeholders on any error or if empty
   fetch('gallery.json?v=' + Date.now())
-    .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
-    .then(data => {
-      const items = Array.isArray(data) && data.length > 0 ? data : PLACEHOLDERS;
-      renderGallery(items);
-    })
-    .catch(() => renderGallery(PLACEHOLDERS));
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(data => renderGallery(Array.isArray(data) ? data : []))
+    .catch(() => renderGallery([]));
 })();
 
 /* ──────────────────────────────────────────
    6. LIGHTBOX
 ────────────────────────────────────────── */
 (function initLightbox() {
-  const lb      = document.getElementById('lightbox');
-  const lbImg   = document.getElementById('lightbox-img');
-  const lbCap   = document.getElementById('lightbox-caption');
+  const lb       = document.getElementById('lightbox');
+  const lbImg    = document.getElementById('lightbox-img');
+  const lbCap    = document.getElementById('lightbox-caption');
   const btnClose = document.getElementById('lightbox-close');
-  const btnPrev = document.getElementById('lb-prev');
-  const btnNext = document.getElementById('lb-next');
+  const btnPrev  = document.getElementById('lb-prev');
+  const btnNext  = document.getElementById('lb-next');
 
   if (!lb) return;
 

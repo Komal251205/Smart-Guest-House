@@ -65,12 +65,7 @@
   }
   </script>
 
-  <!-- HTTPS NOTE (for the site deployer):
-       This static HTML file cannot enforce HTTPS on its own.
-       Deploy on Netlify / Vercel / Cloudflare Pages / GitHub Pages —
-       all provide free automatic HTTPS with HTTP→HTTPS redirect.
-       Security headers are in the _headers file (Netlify) or netlify.toml.
-  -->
+
 </head>
 
 <body>
@@ -398,30 +393,11 @@
       <!-- Items injected by JS -->
     </div>
 
-    <!-- Note shown only when gallery.json is empty / using placeholders -->
-    <p class="gallery-note" id="gallery-note" role="note" style="display:none;">
-      📸 &nbsp;These are placeholder images. The venue owner can add real photos via
-      <a href="upload.html" style="color:var(--gold);font-weight:600;">upload.html</a>
-      and update <code>gallery.json</code>.
-    </p>
+
   </div>
 </section>
 
-<!-- ════════════════════════════════════════
-     SECTION 6 (internal): Photo Upload note
-     — actual UI is in upload.html (not linked in public nav)
-════════════════════════════════════════ -->
-<!--
-  STATIC-SITE GALLERY WORKFLOW (for site maintainer):
-  ─────────────────────────────────────────────────────
-  1. Open upload.html in your browser (share this link privately with the venue owner).
-  2. Use the Cloudinary upload widget to upload photos.
-  3. After each upload, the widget shows the returned image URL in a copyable text box.
-  4. Copy that URL and paste it into gallery.json (adding a new object with "url" + "caption").
-  5. Re-upload/re-deploy gallery.json to your hosting provider.
-  6. The main site reads gallery.json at page load — no server or database needed.
-  No Cloudinary API secret is ever exposed; only the unsigned preset name + cloud name.
--->
+
 
 <!-- ════════════════════════════════════════
      SECTION 7: WHY CHOOSE US
