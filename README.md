@@ -90,11 +90,6 @@ vercel --prod
 ```
 Or push your updated files to GitHub — Vercel auto-deploys on every commit.
 
----
-
-## 📞 Contacts
-- **Niranjan Dev (Primary)** — [+91 92235 67100](tel:+919223567100)
-- **Pramod Kumar Fauji** — [+91 74979 68233](tel:+917497968233)
 
 ---
 
